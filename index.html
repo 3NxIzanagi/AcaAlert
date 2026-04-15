@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AcaAlert — Student Risk Prediction System</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+<nav id="sidebar">
+  <div style="padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07)">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:36px;height:36px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="18" height="18" viewBox="0 0 15 15" fill="none"><path d="M2 12L6 8L9 11L13.5 4.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div>
+        <div style="color:#fff;font-weight:700;font-size:18px;letter-spacing:-.01em">AcaAlert</div>
+        <div style="color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.05em;margin-top:2px">RISK PREDICTION</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:18px 14px;flex:1;overflow-y:auto">
+    <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;padding:0 8px;margin-bottom:10px">Modules</div>
+
+    <div class="nav-item active" id="nav-dashboard" onclick="go('dashboard')">
+      <svg width="18" height="18" viewBox="0 0 14 14" fill="currentColor" style="flex-shrink:0"><rect x="1" y="1" width="5" height="5" rx="1.2"/><rect x="8" y="1" width="5" height="5" rx="1.2"/><rect x="1" y="8" width="5" height="5" rx="1.2"/><rect x="8" y="8" width="5" height="5" rx="1.2"/></svg>
+      Dashboard
+    </div>
+
+    <div class="nav-item" id="nav-students" onclick="go('students')">
+      <svg width="18" height="18" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><circle cx="7" cy="4.5" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M1.5 13c0-3.038 2.462-5.5 5.5-5.5S12.5 9.962 12.5 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Students
+    </div>
+
+    <div class="nav-item" id="nav-analytics" onclick="go('analytics')">
+      <svg width="18" height="18" viewBox="0 0 14 14" fill="currentColor" style="flex-shrink:0"><rect x="1" y="8" width="3" height="5" rx="1"/><rect x="5.5" y="5" width="3" height="8" rx="1"/><rect x="10" y="2" width="3" height="11" rx="1"/></svg>
+      Analytics & Prediction
+    </div>
+
+    <div class="nav-item" id="nav-interventions" onclick="go('interventions')">
+      <svg width="18" height="18" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><rect x="2" y="1" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 5h5M4.5 7.5h5M4.5 10h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Interventions
+    </div>
+
+    <div style="margin-top:20px;border-top:1px solid rgba(255,255,255,.07);padding-top:16px">
+      <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase;padding:0 8px;margin-bottom:10px">Data Operations</div>
+      
+      <div class="nav-item" id="nav-import" onclick="go('import')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Import Data
+      </div>
+
+      <div class="nav-item" id="nav-export" onclick="go('export')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Export Report
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:18px;border-top:1px solid rgba(255,255,255,.07)">
+    <div class="nav-item" style="color:#ffffff;justify-content:center;font-weight:600;margin-bottom:0;" onclick="toast('Logging out...','#991b1b')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      Log Out
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+  <header class="header">
+    <div style="position:relative; cursor:pointer;" onclick="go('dashboard')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+      <span style="position:absolute; top:-5px; right:-6px; background:#ef4444; color:#fff; font-size:12px; font-weight:bold; border-radius:10px; padding:2px 6px; animation:blink 1.6s infinite">4</span>
+    </div>
+    
+    <div style="display:flex; align-items:center; gap:12px; border-left:1px solid #e2e8f0; padding-left:18px;">
+      <div style="width:38px; height:38px; border-radius:50%; background:#1e3a8a; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:600; color:#bfdbfe; flex-shrink:0">LT</div>
+      <div>
+        <div style="color:#0f172a; font-size:16px; font-weight:600">Dr. Le Truong Lam</div>
+        <div style="color:#64748b; font-size:13px; margin-top:2px">Lecturer · CS Faculty</div>
+      </div>
+    </div>
+  </header>
+
+  <div id="main-content">
+    <div id="view-dashboard" class="view active">
+      <div class="ph">
+        <div>
+          <div class="pt">Dashboard</div>
+          <div style="font-size:13px;color:#64748b;margin-top:4px">Software Engineering · Semester 2, 2025 · CS2024A & CS2024B</div>
+        </div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div style="font-size:14px;color:#64748b;margin-bottom:4px;font-weight:500">Total Students</div>
+          <div style="font-size:33px;font-weight:700;color:#0f172a">42</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:4px">2 classes · 4 subjects</div>
+        </div>
+        <div class="kpi" style="border-left:3px solid #ef4444">
+          <div style="font-size:14px;color:#64748b;margin-bottom:4px;font-weight:500">At-Risk Students</div>
+          <div style="font-size:33px;font-weight:700;color:#dc2626">4</div>
+          <div style="font-size:12px;color:#dc2626;margin-top:4px;font-weight:600">↑ 2 from last week</div>
+        </div>
+        <div class="kpi">
+          <div style="font-size:14px;color:#64748b;margin-bottom:4px;font-weight:500">Class Avg. Risk</div>
+          <div style="font-size:33px;font-weight:700;color:#0f172a">34<span style="font-size:16px;color:#94a3b8">%</span></div>
+          <div style="font-size:12px;color:#22c55e;margin-top:4px;font-weight:600">↓ 3% from last week</div>
+        </div>
+        <div class="kpi" style="border-left:3px solid #2563eb">
+          <div style="font-size:14px;color:#64748b;margin-bottom:4px;font-weight:500">Active Interventions</div>
+          <div style="font-size:33px;font-weight:700;color:#2563eb">6</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:4px">3 students monitored</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start">
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
+          <div style="padding:14px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
+            <div style="font-size:16px;font-weight:600;color:#0f172a">At-Risk Monitor</div>
+            <select style="font-size:14px;padding:4px 10px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#64748b;font-weight:500" onchange="filterDash(this.value)">
+              <option value="all">All students</option>
+              <option value="at-risk">At-risk only</option>
+              <option value="medium">Medium risk</option>
+              <option value="safe">Safe</option>
+            </select>
+          </div>
+          <table class="data-table">
+            <thead><tr><th>Student</th><th>Class</th><th>Risk Level</th><th>Score Gap</th><th>Status</th><th></th></tr></thead>
+            <tbody id="dash-tbody"></tbody>
+          </table>
+        </div>
+
+        <div>
+          <div class="sc" style="margin-bottom:16px">
+            <div class="sc-t">Performance Trend · 8 Weeks</div>
+            <div style="display:flex;gap:14px;font-size:13px;color:#64748b;margin-bottom:10px;font-weight:500">
+              <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:3px;background:#2563eb;display:inline-block;border-radius:2px"></span>Class Avg</span>
+              <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:3px;background:#ef4444;display:inline-block;border-radius:2px;border-top:2px dashed #ef4444"></span>At-Risk Avg</span>
+            </div>
+            <div style="position:relative;height:180px"><canvas id="trendChart"></canvas></div>
+          </div>
+
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
+            <div style="padding:14px 18px;border-bottom:1px solid #f1f5f9;font-size:16px;font-weight:600;color:#0f172a">Recent Alerts</div>
+            <div id="alert-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-students" class="view">
+      <div class="ph">
+        <div>
+          <div class="pt">Students</div>
+          <div style="font-size:13px;color:#64748b;margin-top:4px">Manage student records</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="f-name" placeholder="Search name or ID…" style="width:220px;font-size:14px;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#1e293b" oninput="renderStudents()">
+        <select id="f-cls" style="font-size:14px;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#334155" onchange="renderStudents()">
+          <option value="">All Classes</option><option>CS2024A</option><option>CS2024B</option>
+        </select>
+        <select id="f-subj" style="font-size:14px;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#334155" onchange="renderStudents()">
+          <option value="">All Subjects</option>
+          <option>Software Engineering</option><option>Data Structures</option>
+          <option>Database Systems</option><option>Computer Networks</option>
+        </select>
+        <select id="f-stat" style="font-size:14px;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#334155" onchange="renderStudents()">
+          <option value="">All Risk Levels</option><option value="at-risk">At-Risk</option>
+          <option value="medium">Medium</option><option value="safe">Safe</option>
+        </select>
+        <button class="btn" onclick="resetFilters()">Reset</button>
+        <span id="s-count" style="font-size:13px;font-weight:500;color:#64748b;margin-left:8px"></span>
+      </div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
+        <table class="data-table">
+          <thead><tr><th>Student</th><th>ID</th><th>Class</th><th>Avg Score</th><th>Risk</th><th>Score Gap</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="students-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="view-analytics" class="view">
+      <div class="ph"><div class="pt">Analytics & Prediction</div></div>
+      <div id="analytics-empty" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:400px; background:#fff; border:1px solid #e2e8f0; border-radius:10px;">
+        <div id="analytics-msg" style="font-size:16px; font-weight:500; color:#64748b; margin-bottom:16px;">Analytics engine is idle. Run analysis to generate predictions.</div>
+        <button id="run-btn" class="btn btn-primary" style="padding:12px 24px; font-size:16px; font-weight:600;" onclick="runAnalysis()">Run Analysis</button>
+      </div>
+      <div id="analytics-content" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+          <div class="sc">
+            <div class="sc-t">Risk Score Distribution</div>
+            <div style="position:relative;height:220px"><canvas id="riskChart"></canvas></div>
+          </div>
+          <div class="sc">
+            <div class="sc-t">Avg Score vs. Failure Risk</div>
+            <div style="position:relative;height:220px"><canvas id="scatterChart"></canvas></div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
+          <div style="padding:14px 18px;border-bottom:1px solid #f1f5f9;font-size:16px;font-weight:600;color:#0f172a">Prediction Results — All Students</div>
+          <table class="data-table">
+            <thead><tr><th>Student</th><th>Current Avg</th><th>Predicted Final</th><th>Failure Risk</th><th>Score Needed</th><th>Trend</th></tr></thead>
+            <tbody id="analytics-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-interventions" class="view">
+      <div class="ph">
+        <div class="pt">Intervention Tracking</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
+        <div style="padding:14px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:16px;font-weight:600;color:#0f172a">All Intervention Records</div>
+          <span id="i-count" style="font-size:13px;font-weight:500;color:#64748b"></span>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Student</th><th>Type</th><th>Date</th><th>Notes</th><th>Status</th></tr></thead>
+          <tbody id="interv-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div id="view-import" class="view">
+      <div class="ph"><div class="pt">Import Data</div></div>
+      <div style="display:flex; justify-content:center; align-items:center; height:50vh; gap:24px;">
+        <button class="btn btn-primary" style="padding:24px 32px; font-size:18px; font-weight:600; flex-direction:column; gap:12px; width:200px;" onclick="doImport('CSV')">
+           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+           Import CSV
+        </button>
+        <button class="btn" style="padding:24px 32px; font-size:18px; font-weight:600; flex-direction:column; gap:12px; width:200px; background:#16a34a; color:#fff; border-color:#16a34a;" onclick="doImport('Excel')">
+           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+           Import Excel
+        </button>
+      </div>
+    </div>
+    
+    <div id="view-export" class="view">
+      <div class="ph"><div class="pt">Export Report</div></div>
+      <div style="display:flex; justify-content:center; align-items:center; height:50vh; gap:24px;">
+        <button class="btn" style="padding:24px 32px; font-size:18px; font-weight:600; flex-direction:column; gap:12px; width:200px; background:#dc2626; color:#fff; border-color:#dc2626;" onclick="toast('Exporting PDF...', '#1e40af')">
+           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+           Export PDF
+        </button>
+        <button class="btn btn-primary" style="padding:24px 32px; font-size:18px; font-weight:600; flex-direction:column; gap:12px; width:200px;" onclick="toast('Exporting CSV...', '#1e40af')">
+           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+           Export CSV
+        </button>
+        <button class="btn" style="padding:24px 32px; font-size:18px; font-weight:600; flex-direction:column; gap:12px; width:200px; background:#16a34a; color:#fff; border-color:#16a34a;" onclick="toast('Exporting Excel...', '#1e40af')">
+           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+           Export Excel
+        </button>
+      </div>
+    </div>
+
+    <div id="view-detail" class="view">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+        <button class="btn" onclick="go(prevView)">← Back</button>
+        <div class="pt" id="d-name"></div>
+        <span id="d-badge" style="margin-left: 10px;"></span>
+      </div>
+      <div style="display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start">
+        <div>
+          <div class="sc" style="margin-bottom:16px">
+            <div id="d-profile"></div>
+            <div style="margin-top:16px;text-align:center">
+              <div class="sc-t" style="margin-bottom:10px">Risk Gauge</div>
+              <svg id="d-gauge" width="190" height="100" viewBox="0 0 170 92"></svg>
+              <div style="font-size:13px;color:#64748b;margin-top:4px;font-weight:500">Failure probability estimate</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="sc" style="margin-bottom:16px">
+            <div class="sc-t">Update Subject Performance</div>
+            <div id="d-scores"></div>
+          </div>
+
+          <div class="sc" style="margin-bottom:16px">
+            <div class="sc-t">Lecturer Support Tools: Send Warning to Student</div>
+            <textarea id="warn-txt" style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:6px;font-family:inherit;font-size:15px;min-height:80px;resize:vertical;background:#fff;color:#1e293b;margin-bottom:10px" placeholder="Compose a warning message to send via in-app notification…"></textarea>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="btn btn-warn" onclick="sendWarn()">Send Warning</button>
+              <button class="btn" onclick="document.getElementById('warn-txt').value=''">Clear</button>
+              <span id="warn-fb" style="font-size:14px;font-weight:600;color:#16a34a"></span>
+            </div>
+          </div>
+
+          <div class="sc">
+            <div class="sc-t">Intervention Log</div>
+            <div id="d-log"></div>
+            <div style="border-top:1px solid #f1f5f9;padding-top:16px;margin-top:16px">
+              <div style="font-size:13px;font-weight:700;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Track New Intervention</div>
+              <select id="i-type" style="width:100%;font-size:15px;padding:10px 12px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;color:#334155;margin-bottom:10px;font-weight:500">
+                <option>Counseling session</option>
+                <option>Extra tutorial</option>
+                <option>Email follow-up</option>
+                <option>Parent notification</option>
+                <option>Academic plan review</option>
+              </select>
+              <textarea id="i-note" style="width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:6px;font-family:inherit;font-size:15px;min-height:70px;resize:vertical;background:#fff;color:#1e293b;margin-bottom:10px" placeholder="Notes about this intervention…"></textarea>
+              <button class="btn btn-primary" onclick="addInterv()">Record Intervention</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
