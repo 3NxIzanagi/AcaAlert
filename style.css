@@ -341,4 +341,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
     #analytics-tbody td:nth-child(6) {
         display: none !important;
     }
+    .header {
+        flex-direction: row-reverse !important; /* Đảo ngược vị trí: Profile trái, Bell phải */
+        justify-content: space-between !important;
+        padding: 15px 20px !important;
+    }
+
+    /* Xóa đường kẻ ngăn cách khi chuyển sang trái */
+    .header > div:last-child {
+        border-left: none !important;
+        padding-left: 0 !important;
+    }
+    
+    /* Đảm bảo chuông sát lề phải */
+    .header > div:first-child {
+        margin-right: -5px; 
+    }
 }
