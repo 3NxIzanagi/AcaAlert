@@ -59,6 +59,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
   display: flex; justify-content: flex-end; gap: 12px;
 }
 
+.filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* Ép các ô input và select giống hệt nút Reset */
+.filter-bar input, 
+.filter-bar select, 
+.filter-bar .btn {
+    height: 40px !important; /* Chiều cao cố định */
+    border: 1px solid #cbd5e1 !important; /* Màu viền nút Reset */
+    border-radius: 6px !important; /* Độ bo góc nút Reset */
+    font-size: 14px !important;
+    padding: 0 12px !important;
+    box-sizing: border-box !important;
+    background-color: #fff;
+    color: #334155;
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.filter-bar input:focus, 
+.filter-bar select:focus {
+    border-color: #2563eb !important; /* Highlight khi click */
+}
+
 /* Bottom Nav ẩn trên Desktop */
 #bottom-nav, #mobile-menu-overlay { display: none; }
 
@@ -67,31 +97,51 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
     #main-content { padding-bottom: 100px; }
     
     #bottom-nav {
-        display: flex;
-        position: fixed;
-        bottom: 0; left: 0; right: 0;
-        height: 70px;
-        background: transparent !important; /* QUAN TRỌNG: Để trong suốt */
-        justify-content: space-around;
-        align-items: center;
-        z-index: 900;
-        padding: 0 15px;
-    }
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 70px;
+    background: transparent !important;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 900;
+    /* Biến để điều khiển vị trí lỗ hổng (notch) */
+    --notch-x: 50%; 
+}
 
     #bottom-nav::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: #0d1117; /* Màu đen của Nav */
-        z-index: -1; /* Nằm dưới các icon */
-        
-        /* Tạo lỗ hổng hình tròn (Notch) xuyên thấu */
-        -webkit-mask-image: radial-gradient(circle 40px at 50% 0, transparent 39px, #000 40px);
-        mask-image: radial-gradient(circle 40px at 50% 0, transparent 39px, #000 40px);
-    }
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #0d1117;
+    z-index: -1;
+    /* Lỗ hổng (Notch) di chuyển theo biến --notch-x */
+    -webkit-mask-image: radial-gradient(circle 40px at var(--notch-x) 0, transparent 39px, #000 40px);
+    mask-image: radial-gradient(circle 40px at var(--notch-x) 0, transparent 39px, #000 40px);
+    transition: -webkit-mask-image 0.3s ease;
+}
 
-    .nav-item-m { color: rgba(255,255,255,0.5); cursor: pointer; padding: 10px; }
-    .nav-item-m.active { color: #3b82f6; }
+   .nav-item-m { 
+    color: rgba(255,255,255,0.5); 
+    cursor: pointer; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 901;
+}
+
+    .nav-item-m.active { 
+    color: #fff;
+    background: #2563eb;
+    border-radius: 50%;
+    transform: translateY(-28px); /* Nổi lên trên vùng lõm */
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    border: 2px solid rgba(255,255,255,0.1);
+}
 
     .nav-center-wrapper {
         position: relative;
@@ -132,13 +182,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 
     /* Menu phụ */
     #mobile-menu-overlay {
-        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.5); z-index: 1000;
-    }
+    display: none; /* Mặc định ẩn */
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5); z-index: 1000;
+}
     .mobile-menu-content {
         position: absolute; bottom: 80px; left: 15px; right: 15px;
         background: #161b22; border-radius: 12px; padding: 10px;
     }
+
+    #mobile-menu-overlay.show {
+    display: block !important;
+}
     
     /* Responsive cho các bảng và grid */
     .kpi-grid { grid-template-columns: 1fr 1fr; }
@@ -217,6 +272,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
     #f-name {
         width: 100% !important; /* Ô search full chiều ngang */
     }
+    
 
     #view-import > div[style*="display:flex"],
     #view-export > div[style*="display:flex"] {

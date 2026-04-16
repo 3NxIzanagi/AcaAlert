@@ -282,37 +282,88 @@ let trendInited = false,
 // ── Navigation ──────────────────────────────────────────────────────────
 function go(v) {
   prevView = curView;
+
+  // 1. Chuyển đổi hiển thị View
   document
     .querySelectorAll(".view")
     .forEach((el) => el.classList.remove("active"));
+  const targetView = document.getElementById("view-" + v);
+  if (targetView) targetView.classList.add("active");
+
+  // 2. Cập nhật Sidebar (Desktop)
   document
     .querySelectorAll(".nav-item")
     .forEach((el) => el.classList.remove("active"));
-  document.getElementById("view-" + v).classList.add("active");
   const ni = document.getElementById("nav-" + v);
   if (ni) ni.classList.add("active");
+
   curView = v;
 
+  // 3. Logic render dữ liệu các trang
   if (v === "students") renderStudents();
   if (v === "analytics") {
     const emptyState = document.getElementById("analytics-empty");
     const contentState = document.getElementById("analytics-content");
 
-    if (isAnalysisRun) {
-      // Nếu đã chạy phân tích, hiển thị kết quả luôn
+    // Kiểm tra biến isAnalysisRun an toàn (tránh lỗi undefined)
+    const isRun = typeof isAnalysisRun !== "undefined" && isAnalysisRun;
+
+    if (isRun) {
       emptyState.style.display = "none";
       contentState.style.display = "block";
     } else {
-      // Nếu chưa chạy, hiển thị màn hình chờ
       emptyState.style.display = "flex";
       document.getElementById("analytics-msg").textContent =
         "Analytics engine is idle. Run analysis to generate predictions.";
-      document.getElementById("run-btn").style.display = "block";
+      const runBtn = document.getElementById("run-btn");
+      if (runBtn) runBtn.style.display = "block";
       contentState.style.display = "none";
     }
   }
   if (v === "interventions") renderInterv();
   if (v === "detail" && selStudent) renderDetail();
+
+  // ── 4. XỬ LÝ MOBILE NAV (FIX LỖI NOTCH & ICON) ──────────────────────────
+
+  // Xóa trạng thái active cũ trên mobile
+  const mobileNavItems = document.querySelectorAll(".nav-item-m");
+  mobileNavItems.forEach((el) => el.classList.remove("active"));
+
+  /**
+   * Ánh xạ các View phụ về ID nút chính trên Bottom Nav:
+   * - Import/Export thuộc về nút Menu
+   * - Detail (chi tiết sinh viên) thuộc về nút Students
+   */
+  const navMapping = {
+    import: "menu",
+    export: "menu",
+    detail: "students", // Khi xem chi tiết, vẫn sáng nút Students
+  };
+  const activeBtnId = navMapping[v] || v;
+
+  const activeMobile = document.getElementById("nav-m-" + activeBtnId);
+  if (activeMobile) {
+    activeMobile.classList.add("active");
+  }
+
+  /**
+   * Tọa độ Notch (%) tương ứng với 5 vị trí icon trên thanh điều hướng
+   */
+  const positions = {
+    students: "10%",
+    analytics: "30%",
+    dashboard: "50%",
+    interventions: "70%",
+    menu: "90%",
+    import: "90%",
+    export: "90%",
+    detail: "10%",
+  };
+
+  const bNav = document.getElementById("bottom-nav");
+  if (bNav && positions[v]) {
+    bNav.style.setProperty("--notch-x", positions[v]);
+  }
 }
 
 function openDetail(id, from) {
@@ -410,7 +461,7 @@ function initTrend() {
   new Chart(document.getElementById("trendChart"), {
     type: "line",
     data: {
-      labels: ["Wk1", "Wk2", "Wk3", "Wk4", "Wk5", "Wk6", "Wk7", "Wk8"],
+      labels: ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "8"],
       datasets: [
         {
           label: "Class",
@@ -845,6 +896,13 @@ function saveImport() {
 function cancelImport() {
   closeImportModal();
   showImportStatus("Error: Import cancelled.", "error");
+}
+
+function toggleMobileMenu() {
+  const overlay = document.getElementById("mobile-menu-overlay");
+  if (overlay) {
+    overlay.classList.toggle("show");
+  }
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────
