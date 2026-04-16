@@ -461,7 +461,7 @@ function initTrend() {
   new Chart(document.getElementById("trendChart"), {
     type: "line",
     data: {
-      labels: ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "8"],
+      labels: ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8"],
       datasets: [
         {
           label: "Class",
