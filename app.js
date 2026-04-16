@@ -278,6 +278,7 @@ let curView = "dashboard",
 let trendInited = false,
   analyticsInited = false;
 
+
 // ── Navigation ──────────────────────────────────────────────────────────
 function go(v) {
   prevView = curView;
@@ -294,11 +295,21 @@ function go(v) {
 
   if (v === "students") renderStudents();
   if (v === "analytics") {
-    document.getElementById("analytics-empty").style.display = "flex";
-    document.getElementById("analytics-msg").textContent =
-      "Analytics engine is idle. Run analysis to generate predictions.";
-    document.getElementById("run-btn").style.display = "block";
-    document.getElementById("analytics-content").style.display = "none";
+    const emptyState = document.getElementById("analytics-empty");
+    const contentState = document.getElementById("analytics-content");
+
+    if (isAnalysisRun) {
+      // Nếu đã chạy phân tích, hiển thị kết quả luôn
+      emptyState.style.display = "none";
+      contentState.style.display = "block";
+    } else {
+      // Nếu chưa chạy, hiển thị màn hình chờ
+      emptyState.style.display = "flex";
+      document.getElementById("analytics-msg").textContent =
+        "Analytics engine is idle. Run analysis to generate predictions.";
+      document.getElementById("run-btn").style.display = "block";
+      contentState.style.display = "none";
+    }
   }
   if (v === "interventions") renderInterv();
   if (v === "detail" && selStudent) renderDetail();
@@ -498,6 +509,7 @@ function runAnalysis() {
     "Processing background algorithms...";
   document.getElementById("run-btn").style.display = "none";
   setTimeout(() => {
+    isAnalysisRun = true; // Xác nhận đã chạy thành công
     document.getElementById("analytics-empty").style.display = "none";
     document.getElementById("analytics-content").style.display = "block";
     renderAnalytics();
@@ -786,8 +798,53 @@ function sendWarn() {
 }
 
 // ── Other ────────────────────────────────────────────────────────────────
-function doImport(type) {
-  toast(`${type} records imported successfully.','#166534`);
+let currentImportType = '';
+
+function openImportModal(type) {
+  currentImportType = type;
+  document.getElementById('modal-title').textContent = `Upload ${type} File`;
+  document.getElementById('import-modal').style.display = 'flex';
+}
+
+function closeImportModal() {
+  document.getElementById('import-modal').style.display = 'none';
+  document.getElementById('hidden-file-input').value = ''; // Reset input
+}
+
+function showImportStatus(msg, type) {
+  const el = document.getElementById("import-status");
+  if (!el) return;
+
+  el.style.display = "block";
+  el.textContent = msg;
+
+  if (type === "success") {
+    el.style.background = "#dcfce7"; // Nền xanh nhạt
+    el.style.color = "#166534"; // Chữ xanh đậm
+    el.style.borderColor = "#bbf7d0";
+  } else {
+    el.style.background = "#fee2e2"; // Nền đỏ nhạt
+    el.style.color = "#991b1b"; // Chữ đỏ đậm
+    el.style.borderColor = "#fecaca";
+  }
+
+  // Tự động ẩn đi sau 3 giây
+  setTimeout(() => {
+    el.style.display = "none";
+  }, 10000);
+}
+
+function saveImport() {
+  closeImportModal();
+  showImportStatus(
+    `Success: ${currentImportType} file imported successfully!`,
+    "success",
+  );
+}
+
+function cancelImport() {
+  closeImportModal();
+  showImportStatus("Error: Import cancelled.", "error");
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────
